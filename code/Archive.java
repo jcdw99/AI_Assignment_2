@@ -1,13 +1,19 @@
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Comparator;
 
 public class Archive {
 
-    private Vector[] entries;
+    public Vector[] entries;
     private int size;
     private int tournySize;
     private byte funcFlag;
+
+    public Archive(int maxEntries) {
+        this.size = 0;
+        entries = new Vector[maxEntries];
+    }
 
     public Archive(int maxEntries, byte funcFlag) {
         entries = new Vector[maxEntries];
@@ -182,6 +188,35 @@ public class Archive {
 
     }
 
+    /**
+     * converts this archive which contains positions, to an archive reflecting the current
+     * estimation of the pareto optimal front (F1, F2)
+     * @return
+     */
+    public Archive arcToF1F2() throws Exception{
+        Archive a = new Archive(size);
+        for (int i = 0; i < size; i++) {
+            a.entries[i] = entryF1F2Form(this.entries[i]);
+        }
+        Comparator<Vector> c = new Comparator<Vector>() {
+            @Override
+            public int compare(Vector o1, Vector o2) {
+                try {
+                    if (o1.atIndex(0) < o2.atIndex(0))
+                        return -1;
+                    if (o1.atIndex(0) > o2.atIndex(0))
+                        return 1;
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+                return 0;
+            }
+        };
+        
+        Arrays.sort(a.entries, c);
+        return a;        
+    }
+
     public String csvPrint() throws Exception {
         StringBuilder b = new StringBuilder();
         b.append("F1, F2\n");
@@ -193,6 +228,28 @@ public class Archive {
             if (i < size - 1)
                 b.append("\n");
         }
+        return b.toString();
+    }
+
+    public String frontToString() {
+        StringBuilder b = new StringBuilder();
+        b.append("-----ARCHIVE-----\n");
+        b.append("\t[\n");
+        int nonNull = 0;
+        for (Vector i: entries) {
+            if (i != null) {
+                nonNull++;
+                try {
+                    b.append("\t  " + i);
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            } else {
+                b.append("\t  [ null ]\n");
+            }
+        }
+        b.append(String.format("EntryCount: %s/%s\n", nonNull, entries.length));
+        b.append("\n-----ARCHIVE-----\n");
         return b.toString();
     }
 

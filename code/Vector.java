@@ -2,6 +2,7 @@
 
 public class Vector {
 
+    private static double EPSILON = 0.0001;
     private double[] data;
     /**
      * construct a new vector object of desired length, initialized
@@ -34,6 +35,13 @@ public class Vector {
         return new Vector(data);
     }
 
+    private static boolean less(double a, double b) {
+        if (Math.abs(a - b) > EPSILON && a < b) {
+            return true;
+        }
+        return false;
+
+    }
     /**
      * returns true if vector A dominates Vector B. The usage is boolean res = A.dominates(B)
      * @param that represents Vector B
@@ -45,16 +53,37 @@ public class Vector {
             throw new Exception("Vector Length Mismatch");
         boolean lessFlag = false;
         for (int i = 0; i < this.data.length; i++) {
+
+            // if (less(this.data[i] , that.atIndex(i))) {
             if (this.data[i] < that.atIndex(i)) {
                 lessFlag = true;
                 continue;
             }
+
             if (this.data[i] == that.atIndex(i))
                 continue;
             else
                 return false;
         }
         return lessFlag;
+    }
+
+
+    /**
+     * Computes the distance between these two vectors, if they are regarded to as points,
+     * IE vectors draw with the tail at the origin, and the head at the point.
+     * 
+     * @param that
+     * @return
+     */
+    public double distance(Vector that) throws Exception{
+        if (this.data.length != that.data.length)
+            throw new Exception("Vector Length Mismatch");
+        double sum = 0.0;
+        for (int i = 0; i < this.data.length; i++) {
+            sum += Math.pow((this.data[i] - that.atIndex(i)) , 2);
+        }
+        return Math.sqrt(sum);
     }
 
     public Vector sqrRoot() throws Exception {

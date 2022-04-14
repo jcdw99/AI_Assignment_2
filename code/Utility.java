@@ -46,4 +46,44 @@ public class Utility {
         return lambda;
     }
 
+    /**
+     * Calculates the inverted generational distance between archives A and B
+     * 
+     * Archive A represents the estimated pareto front
+     * Archive B represents the true pareto front
+     * @param a
+     * @param b
+     * @return
+     */
+    public static double IGD(Archive a, Archive b) throws Exception {
+        double distance = 0.0;
+        // for each vector in my estimated front
+        for (int i = 0; i < a.entries.length; i++) {
+            // for each vector in the optimal front
+            Vector found = a.entries[i];
+            int index = 1;
+            for (int j = 1; j < b.entries.length - 1; j++) {
+                double optF1 = b.entries[j].atIndex(0);
+                if (found.atIndex(0) < optF1)
+                    continue;
+                index = j;
+                break;
+            }
+            // compare to left
+            double distToLeft = found.distance(b.entries[index - 1]);
+            // compare to straight
+            double distTo = found.distance(b.entries[index]);
+            // compare to right
+            double distToRight = found.distance(b.entries[index + 1]);
+            // get closest 
+            double min = Math.min(Math.min(distToLeft, distTo), distToRight);
+
+            // add to min
+            distance += min * min;
+        }
+
+
+        return Math.sqrt(distance) / a.entries.length;
+    }
+
 }

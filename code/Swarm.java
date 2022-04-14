@@ -20,6 +20,7 @@ public class Swarm {
     public Swarm(byte funcFlag, byte objFlag, int particles, int dim, Archive a) throws Exception {
         
         double[] params = getParams(funcFlag);
+        // double[] params = Utility.sampleControlParams();
         this.funcFlag = funcFlag;
         this.objFlag = objFlag;
         this.w = params[0];
