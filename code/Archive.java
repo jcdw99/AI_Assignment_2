@@ -14,7 +14,6 @@ public class Archive {
         this.size = 0;
         this.tournySize = 3;
         this.funcFlag = funcFlag;
-
     }
 
     /**
@@ -28,33 +27,31 @@ public class Archive {
      * @throws Exception
      */
     public boolean tryArchiveAdd(Vector candidate) throws Exception {
-        if (!Function.inDomain(candidate, funcFlag))
+
+        if (!Function.inDomain(candidate, funcFlag)) {
             return false;
+        }
         if (!isDominated(candidate)) {
-            Vector[] dominates = removeDominated(candidate);
+            removeDominated(candidate);
             if (size < this.entries.length) {
                 entries[size] = candidate;
                 size ++;
                 return true;
             } else {
-
-                // init most crowded vector
-                Vector v = new Vector(entries[0].size());
                 // init most crowded val;
-                double crowdAmount = Double.MIN_VALUE;
+                double crowdAmount = Double.MAX_VALUE;
                 // init most crowd index = 0;
                 int crowdDex = 0;
 
                 // for each particle in swarm
                 for (int i = 0; i < size; i++) {
                     double thisCrowd = crowdingDistance(entries[i]);
-                    if (thisCrowd > crowdAmount) {
+                    if (thisCrowd < crowdAmount) {
                         crowdDex = i;
-                        v = entries[i];
                         crowdAmount = thisCrowd;
                     }
                 }
-                entries[crowdDex] = v.duplicate();
+                entries[crowdDex] = candidate.duplicate();
             }
 
         }
@@ -126,15 +123,15 @@ public class Archive {
         for (int i = 0; i < tournySize; i++) {
             vecs[i] = entries[(int) (Math.random() * size)];
         }
-        int minDex = 0;
+        int maxDex = 0;
         double bestDist = Double.MIN_VALUE;
+
         for (int i = 0; i < vecs.length; i++) {
             if (crowdingDistance(vecs[i]) > bestDist) {
-                minDex = i;
+                maxDex = i;
             }
         }
-
-        return vecs[minDex].duplicate();
+        return vecs[maxDex].duplicate();
     }
 
     /**
@@ -146,7 +143,6 @@ public class Archive {
     public double crowdingDistance(Vector x) throws Exception {
 
         Vector candidate = entryF1F2Form(x);
-
         double[] F1 = new double[size];
         double[] F2 = new double[size];
         for (int i = 0; i < size; i++) {
@@ -154,6 +150,7 @@ public class Archive {
             F1[i] = ent.atIndex(0);
             F2[i] = ent.atIndex(1);
         }
+            
         Arrays.sort(F1);
         Arrays.sort(F2);
 
@@ -161,12 +158,20 @@ public class Archive {
         int f2dex = 0;
         double f1XEval = candidate.atIndex(0);
         double f2XEval = candidate.atIndex(1);
-        for (int i = 0; i < size; i++) {
-            if (F1[i] == f1XEval)
-                f1dex = i;
-            if (F2[i] == f2XEval)
-                f2dex = i;
+
+        for (int f1 = 0; f1 < size; f1++) {
+            if (F1[f1] >= f1XEval) {
+                f1dex = f1;
+                break;
+            }
         }
+        for (int f2 = 0; f2 < size; f2++){
+            if (F2[f2] >= f2XEval) {
+                f2dex = f2;
+                break;
+            }
+        }
+
         if (f1dex == 0 || f1dex == size - 1 || f2dex == 0 || f2dex == size - 1)
             return Double.MAX_VALUE;
         else {

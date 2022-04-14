@@ -19,7 +19,7 @@ public class Swarm {
      */
     public Swarm(byte funcFlag, byte objFlag, int particles, int dim, Archive a) throws Exception {
         
-        double[] params = Utility.sampleControlParams();
+        double[] params = getParams(funcFlag);
         this.funcFlag = funcFlag;
         this.objFlag = objFlag;
         this.w = params[0];
@@ -33,6 +33,27 @@ public class Swarm {
             this.particles[i] = new Particle(dim, funcFlag, objFlag, w, c1, c2, c3, archive);
         }
         updateHoodBest(findGlobalBest());
+    }
+
+    private double[] getParams(byte flag) throws Exception{
+        switch (flag) {
+            case 1: 
+                double[] dat = {0.475, 1.8, 1.1, 1.8};
+                return dat;
+            case 2:
+                double[] dat1 = {0.075, 1.6, 1.35, 1.9};
+                return dat1;
+            case 3:
+                return Utility.sampleControlParams();
+            case 4: 
+                double[] dat3 = {0.175, 1.85, 1.35, 1.85};
+                return dat3;
+            case 6:  
+                 double[] dat4 = {0.6, 1.85, 1.55, 1.8};
+                return dat4;
+            default:
+                throw new Exception("Function Flag not recognized");
+        }
     }
 
     /**
@@ -49,11 +70,11 @@ public class Swarm {
     public void updateIteration() throws Exception{
         for (int i = 0; i < particles.length; i++) {
             // attempt pBest update for this particle if possible
-            boolean updated = particles[i].attemptPBestUpdate();
+            particles[i].attemptPBestUpdate();
             // update neighborhood best for this particle (using gBest currently)
             updateHoodBest(findGlobalBest());
             // attempt to add this particles position to the archive
-            boolean added = archive.tryArchiveAdd(particles[i].position.duplicate());
+            archive.tryArchiveAdd(particles[i].position.duplicate());
             //perform the velocity update
             particles[i].velUpdate();
             //perform position update

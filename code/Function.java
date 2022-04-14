@@ -25,6 +25,10 @@ public class Function {
                 return ZDT3.f1(x);
             case 2:
                 return ZDT2.f1(x);
+            case 6:
+                return ZDT6.f1(x);
+            case 4:
+                return ZDT4.f1(x);
             default:
                 throw new Exception("Function Flag Invalid");
         }
@@ -46,6 +50,10 @@ public class Function {
                 return ZDT3.f2(x);
             case 2:
                 return ZDT2.f2(x);
+            case 6:
+                return ZDT6.f2(x);
+            case 4:
+                return ZDT4.f2(x);
             default:
                 throw new Exception("Function Flag Invalid");   
         }
@@ -68,6 +76,10 @@ public class Function {
                 return ZDT3.inDomain(x);
             case 2:
                 return ZDT2.inDomain(x);
+            case 6:
+                return ZDT6.inDomain(x);
+            case 4:
+                return ZDT4.inDomain(x);
             default:
                 throw new Exception("Function Flag Invalid");   
         }
@@ -84,11 +96,15 @@ public class Function {
         switch (flag) {
             // ZDT Test Function T1
             case 1:
-                return ZDT1.getDomatin();
+                return ZDT1.getDomain();
             case 3: 
-                return ZDT3.getDomatin();
+                return ZDT3.getDomain();
             case 2:
-                return ZDT2.getDomatin();
+                return ZDT2.getDomain();
+            case 6:
+                return ZDT6.getDomain();
+            case 4:
+                return ZDT4.getDomain();
 
             default:
                 throw new Exception("Function Flag Invalid");
@@ -109,13 +125,14 @@ public class Function {
         }
 
         public static boolean inDomain(Vector x) throws Exception {
+            int[] dom = getDomain();
             for (int i = 0; i < x.size(); i++) 
-                if (x.atIndex(i) < 0 || x.atIndex(i) > 1)
+                if (x.atIndex(i) < dom[0] || x.atIndex(i) > dom[1])
                     return false;
             return true;
         }
 
-        public static int[] getDomatin() {
+        public static int[] getDomain() {
             int[] domain = {0, 1};
             return domain;
         }
@@ -137,13 +154,14 @@ public class Function {
         }
 
         public static boolean inDomain(Vector x) throws Exception {
+            int[] dom = getDomain();
             for (int i = 0; i < x.size(); i++) 
-                if (x.atIndex(i) < 0 || x.atIndex(i) > 1)
+                if (x.atIndex(i) < dom[0] || x.atIndex(i) > dom[1])
                     return false;
             return true;
         }
 
-        public static int[] getDomatin() {
+        public static int[] getDomain() {
             int[] domain = {0, 1};
             return domain;
         }
@@ -163,14 +181,65 @@ public class Function {
         }
 
         public static boolean inDomain(Vector x) throws Exception {
+            int[] dom = getDomain();
             for (int i = 0; i < x.size(); i++) 
-                if (x.atIndex(i) < 0 || x.atIndex(i) > 1)
+                if (x.atIndex(i) < dom[0] || x.atIndex(i) > dom[1])
                     return false;
             return true;
         }
 
-        public static int[] getDomatin() {
+        public static int[] getDomain() {
             int[] domain = {0, 1};
+            return domain;
+        }
+    }
+    static class ZDT6 {
+        
+        private static double f1(Vector x) throws Exception {
+            return 1 - Math.exp(x.atIndex(0) * -4) * Math.pow(Math.sin(6 * Math.PI * x.atIndex(0)), 6);
+        }
+        private static double f2(Vector x) throws Exception {
+            double g = 1 + 9 * Math.pow((x.sum(1) / (x.size() - 1)), 0.25);
+            double h = 1 - Math.pow((f1(x) / g), 2);
+            double f2 = g * h;
+            return f2;
+        }
+        public static boolean inDomain(Vector x) throws Exception {
+            int[] dom = getDomain();
+            for (int i = 0; i < x.size(); i++) 
+                if (x.atIndex(i) < dom[0] || x.atIndex(i) > dom[1])
+                    return false;
+            return true;
+        }
+        public static int[] getDomain() {
+            int[] domain = {0, 1};
+            return domain;
+        }
+    }
+
+    static class ZDT4 {
+        
+        private static double f1(Vector x) throws Exception {
+            return x.atIndex(0);
+        }
+        private static double f2(Vector x) throws Exception {
+            double g = 1 + 10*(x.size() - 1) + x.pow(2).shift(10*Math.cos(4*Math.PI)).sum(1);
+            double h = 1 - Math.sqrt((f1(x) / g));
+            double f2 = g * h;
+            return f2;
+        }
+        public static boolean inDomain(Vector x) throws Exception {
+            double x1 = x.atIndex(0);
+            if (x1 < 0 || x1 > 1)
+                return false;
+            int[] dom = getDomain();
+            for (int i = 1; i < x.size(); i++) 
+                if (x.atIndex(i) < dom[0] || x.atIndex(i) > dom[1])
+                    return false;
+            return true;
+        }
+        public static int[] getDomain() {
+            int[] domain = {-5, 5};
             return domain;
         }
     }

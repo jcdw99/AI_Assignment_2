@@ -36,6 +36,7 @@ public class Particle {
         pBest = Function.evaluate(position, funcFlag, objFlag);
         velocity = new Vector(dim);
         archive = arc;
+        archive.tryArchiveAdd(position);
 
     } 
 
