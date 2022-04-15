@@ -61,27 +61,14 @@ public class Utility {
         for (int i = 0; i < a.entries.length; i++) {
             // for each vector in the optimal front
             Vector found = a.entries[i];
-            int index = 1;
+            double closest = Double.MAX_VALUE;
             for (int j = 1; j < b.entries.length - 1; j++) {
-                double optF1 = b.entries[j].atIndex(0);
-                if (found.atIndex(0) < optF1)
-                    continue;
-                index = j;
-                break;
+                if (found.distance(b.entries[j]) < closest) {
+                    closest = found.distance(b.entries[j]);
+                }
             }
-            // compare to left
-            double distToLeft = found.distance(b.entries[index - 1]);
-            // compare to straight
-            double distTo = found.distance(b.entries[index]);
-            // compare to right
-            double distToRight = found.distance(b.entries[index + 1]);
-            // get closest 
-            double min = Math.min(Math.min(distToLeft, distTo), distToRight);
-
-            // add to min
-            distance += min * min;
+            distance += closest * closest;
         }
-
 
         return Math.sqrt(distance) / a.entries.length;
     }

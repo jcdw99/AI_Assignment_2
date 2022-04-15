@@ -1,0 +1,10 @@
+rm logs/ZDT1/*.csv
+rm logs/ZDT1/IGD/*.csv
+rm logs/ZDT2/*.csv
+rm logs/ZDT2/IGD/*.csv
+rm logs/ZDT3/*.csv
+rm logs/ZDT3/IGD/*.csv
+rm logs/ZDT4/*.csv
+rm logs/ZDT4/IGD/*.csv
+rm logs/ZDT6/*.csv
+rm logs/ZDT6/IGD/*.csv

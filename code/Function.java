@@ -127,6 +127,10 @@ public class Function {
                 return ZDT3.optimalFront(length);
             case 2:
                 return ZDT2.optimalFront(length);
+            case 4:
+                return ZDT4.optimalFront(length);
+            case 6:
+                return ZDT6.optimalFront(length);
 
             default:
                 throw new Exception("Function Flag Invalid");          
@@ -139,7 +143,7 @@ public class Function {
             return x.atIndex(0);
         }
         private static double f2(Vector x) throws Exception {
-            double g = 1 + 9 * (x.scale(1/(x.size() - 1)).sum(1));
+            double g = 1 + 9 * (x.scale(1.0/(x.size() - 1)).sum(1));
             double h = 1 - Math.sqrt(f1(x) / g) - (f1(x) / g)*(Math.sin(10*Math.PI*f1(x)));
             double f2 = g * h;
             return f2;
@@ -259,11 +263,13 @@ public class Function {
     static class ZDT6 {
         
         private static double f1(Vector x) throws Exception {
-            return 1 - Math.exp(x.atIndex(0) * -4) * Math.pow(Math.sin(6 * Math.PI * x.atIndex(0)), 6);
+            return 1 - Math.exp(x.atIndex(0) * -4) * Math.pow(Math.sin(6.0 * Math.PI * x.atIndex(0)), 6);
         }
+        
         private static double f2(Vector x) throws Exception {
-            double g = 1 + 9 * Math.pow((x.sum(1) / (x.size() - 1)), 0.25);
+            double g = 1 + 9 * Math.pow((x.sum(1) / (x.size() - 1.0)), 0.25);
             double h = 1 - Math.pow((f1(x) / g), 2);
+            System.out.printf("G:%s and H:%s\n", g, h);
             double f2 = g * h;
             return f2;
         }
@@ -278,6 +284,20 @@ public class Function {
             int[] domain = {0, 1};
             return domain;
         }
+
+        public static double optimalf2(double f1 ){
+            return 1 - Math.exp(-4.0 * f1) * Math.pow(Math.sin(6.0 * Math.PI * f1), 6);
+        }
+
+        public static Archive optimalFront(int numEntries) {
+            Archive a = new Archive(numEntries);
+            for (int i = 0; i < numEntries; i++) {
+                double f1 = (double) i / numEntries;
+                double[] dat = {f1 , optimalf2(f1)};
+                a.entries[i] = new Vector(dat);
+            }
+            return a;
+        }
     }
 
     static class ZDT4 {
@@ -286,7 +306,7 @@ public class Function {
             return x.atIndex(0);
         }
         private static double f2(Vector x) throws Exception {
-            double g = 1 + 10*(x.size() - 1) + x.pow(2).shift(10*Math.cos(4*Math.PI)).sum(1);
+            double g = 1.0 + 10.0*(x.size() - 1.0) + x.pow(2).shift(10.0*Math.cos(4.0*Math.PI)).sum(1);
             double h = 1 - Math.sqrt((f1(x) / g));
             double f2 = g * h;
             return f2;
@@ -304,6 +324,20 @@ public class Function {
         public static int[] getDomain() {
             int[] domain = {-5, 5};
             return domain;
+        }
+
+        public static double optimalf2(double f1 ){
+            return 1 - Math.sqrt(f1);
+        }
+
+        public static Archive optimalFront(int numEntries) {
+            Archive a = new Archive(numEntries);
+            for (int i = 1; i < numEntries; i++) {
+                double f1 = (double) i / numEntries;
+                double[] dat = {f1 , optimalf2(f1)};
+                a.entries[i] = new Vector(dat);
+            }
+            return a;
         }
     }
 }

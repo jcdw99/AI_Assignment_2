@@ -12,15 +12,10 @@ public class Driver {
          *  (5) Iterations [Integer]
          */
 
-        // for (int i = 0; i < 500; i++) {
-        //     double[] d1 = {Math.random(), Math.random()};
-        //     double[] d2 = {Math.random(), Math.random()};
-        //     Vector a = new Vector(d1);
-        //     Vector b = new Vector(d2);
-        //     System.out.println(a.toString().substring(0, a.toString().length() - 1) + " dominates " + b.toString().substring(0, b.toString().length() - 1) +" ?    :" + a.dominates(b));
-        // }
-
+        // for (double i = 0; i < 1; i+= 0.05)
+        //     System.out.println(Function.f2(Vector.ZeroOne(10), (byte)2));
         // System.exit(1);
+
         if (args.length != 5)
             usage();
         
@@ -29,12 +24,13 @@ public class Driver {
         int SWARM_SIZE = Integer.parseInt(args[2]);
         int DIMENSION = Integer.parseInt(args[3]);
         int ITERS = Integer.parseInt(args[4]);
-        String FILENAME = fileName(ARCHIVE_SIZE, SWARM_SIZE, ITERS, FLAG);
+        String FILENAME = fileName(ARCHIVE_SIZE, SWARM_SIZE, ITERS, FLAG, DIMENSION);
         Archive my_front = new Archive(ARCHIVE_SIZE, FLAG);
         Archive optimal = Function.getOptimalFront(1000, FLAG);
         Swarm s1 = new Swarm(FLAG, (byte) 1, SWARM_SIZE, DIMENSION, my_front);
         Swarm s2 = new Swarm(FLAG, (byte) 2, SWARM_SIZE, DIMENSION, my_front);
         double[] IGD = new double[ITERS];
+
         for (int i = 0; i < ITERS; i ++) {
             s1.updateIteration();
             s2.updateIteration();
@@ -57,16 +53,16 @@ public class Driver {
         System.exit(1);
     }
 
-    public static String fileName(int arcSize, int swarmSize, int Iters, byte flag) {
+    public static String fileName(int arcSize, int swarmSize, int Iters, byte flag, int dim) throws Exception {
         switch (flag) {
-            case 1: return String.format("IGD_SS%s_A%s_I%s", swarmSize, arcSize, Iters);
-            case 2: return String.format("IGD_SS%s_A%s_I%s", swarmSize, arcSize, Iters);
-            case 3: return String.format("IGD_SS%s_A%s_I%s", swarmSize, arcSize, Iters);
-            case 4: 
-            case 5:
-            default: break;
+            case 1: return String.format("IGD_SS%s_A%s_I%s_D%s_", swarmSize, arcSize, Iters, dim);
+            case 2: return String.format("IGD_SS%s_A%s_I%s_D%s_", swarmSize, arcSize, Iters, dim);
+            case 3: return String.format("IGD_SS%s_A%s_I%s_D%s_", swarmSize, arcSize, Iters, dim);
+            case 4: return String.format("IGD_SS%s_A%s_I%s_D%s_", swarmSize, arcSize, Iters, dim);
+            case 6: return String.format("IGD_SS%s_A%s_I%s_D%s_", swarmSize, arcSize, Iters, dim);
+            default:
+                throw new Exception ("FLAG NOT FOUND");
         }
-        return null;
     }
 
     public static String funcName(byte flag) {
@@ -74,8 +70,8 @@ public class Driver {
             case 1: return "ZDT1/";
             case 2: return "ZDT2/";
             case 3: return "ZDT3/";
-            case 4: 
-            case 5:
+            case 4: return "ZDT4/";
+            case 6: return "ZDT6/";
             default: break;
         }
         return null;

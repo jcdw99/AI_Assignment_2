@@ -9,6 +9,7 @@ public class Swarm {
     private double w;
     private byte funcFlag;
     private byte objFlag;
+    public static boolean SINGLEMODE = false;
 
     /**
      * Initializes a particle swarm that optimizes the specified function, with specified particle count
@@ -32,6 +33,8 @@ public class Swarm {
 
         for (int i = 0; i < particles; i++) {
             this.particles[i] = new Particle(dim, funcFlag, objFlag, w, c1, c2, c3, archive);
+            if (SINGLEMODE)
+                this.particles[i].lambda = 1;
         }
         updateHoodBest(findGlobalBest());
     }
@@ -68,7 +71,12 @@ public class Swarm {
      *      (4) perform the velocity update procedure for this particle (involves tournament selection first)
      *      (5) perform the position update procedure for this particle
      */
-    public void updateIteration() throws Exception{
+    public void updateIteration() throws Exception {
+
+        Vector r1 = Vector.ZeroOne(particles[0].dim);
+        Vector r2 = Vector.ZeroOne(particles[0].dim);
+        Vector r3 = Vector.ZeroOne(particles[0].dim);
+
         for (int i = 0; i < particles.length; i++) {
             // attempt pBest update for this particle if possible
             particles[i].attemptPBestUpdate();
@@ -76,6 +84,8 @@ public class Swarm {
             updateHoodBest(findGlobalBest());
             // attempt to add this particles position to the archive
             archive.tryArchiveAdd(particles[i].position.duplicate());
+            //update particle to reflect new random vector
+            particles[i].updateR1R2R3(r1, r2, r3);
             //perform the velocity update
             particles[i].velUpdate();
             //perform position update
@@ -140,6 +150,13 @@ public class Swarm {
 
     public void printArchive() {
         System.out.println(archive);
+    }
+
+
+    public void printPBests() {
+        for (Particle i: this.particles) {
+            System.out.println(i.pBest);
+        }
     }
 
     public String csvArchive() throws Exception {

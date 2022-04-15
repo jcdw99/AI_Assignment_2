@@ -8,6 +8,9 @@ public class Particle {
     public Vector gBestVec;
     public double gBest;
     public Vector velocity;
+    private Vector r1;
+    private Vector r2;
+    private Vector r3;
     public double w;
     public double c1;
     public double c2;
@@ -16,6 +19,7 @@ public class Particle {
     private Archive archive;
     private byte funcFlag;
     private byte objFlag;
+    public int dim;
 
     /** 
      * Initialization of a new particle
@@ -26,12 +30,17 @@ public class Particle {
         this.c1 =c1;
         this.c2 = c2;
         this.c3 = c3;
+        this.dim = dim;
         this.lambda = Utility.calcLambda(w, c1, c2, c3);
         this.funcFlag = funcFlag;
         this.objFlag = objFlag;
-
+        this.r1 = Vector.ZeroOne(dim);
+        this.r2 = Vector.ZeroOne(dim);
+        this.r3 = Vector.ZeroOne(dim);
         int[] getDomain = Function.getDomain(funcFlag);
         position = Vector.randBetween(getDomain[0], getDomain[1], dim);
+        if (objFlag == 4)
+            position.editIndex(0, Math.random());
         pBestVec = position.duplicate();
         pBest = Function.evaluate(position, funcFlag, objFlag);
         velocity = new Vector(dim);
@@ -39,6 +48,12 @@ public class Particle {
         archive.tryArchiveAdd(position);
 
     } 
+
+    public void updateR1R2R3(Vector r1, Vector r2, Vector r3) {
+        this.r1 = r1.duplicate();
+        this.r2 = r2.duplicate();
+        this.r3 = r3.duplicate();
+    }
 
     /**
      * performs the velocity update equation of MGPSO 
@@ -48,10 +63,11 @@ public class Particle {
     public void velUpdate() throws Exception {
 
         Vector inWeight = velocity.scale(w);
-        Vector cog = Vector.ZeroOne(velocity.size()).scale(c1).prod(pBestVec.sub(position));
-        Vector soc = Vector.ZeroOne(velocity.size()).scale(lambda * c2).prod(gBestVec.sub(position));
-        Vector arc = Vector.ZeroOne(velocity.size()).scale((1-lambda) * c3).prod(archive.tournySelect().sub(position));
+        Vector cog = r1.scale(c1).prod(pBestVec.sub(position));
+        Vector soc = r2.scale(lambda * c2).prod(gBestVec.sub(position));
+        Vector arc = r3.scale((1-lambda) * c3).prod(archive.tournySelect().sub(position));
         this.velocity = cog.add(inWeight).add(soc).add(arc);
+
     }
 
     /**

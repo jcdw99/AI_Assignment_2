@@ -35,6 +35,10 @@ public class Vector {
         return new Vector(data);
     }
 
+    public void editIndex(int index, double val) {
+        this.data[index] = val;
+    }
+
     private static boolean less(double a, double b) {
         if (Math.abs(a - b) > EPSILON && a < b) {
             return true;
@@ -53,7 +57,6 @@ public class Vector {
             throw new Exception("Vector Length Mismatch");
         boolean lessFlag = false;
         for (int i = 0; i < this.data.length; i++) {
-
             // if (less(this.data[i] , that.atIndex(i))) {
             if (this.data[i] < that.atIndex(i)) {
                 lessFlag = true;
