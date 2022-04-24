@@ -1,4 +1,5 @@
 import java.io.PrintWriter;
+import java.util.ArrayList;
 
 public class Driver {
     public static void main(String[] args) throws Exception {
@@ -11,13 +12,10 @@ public class Driver {
          *  (4) Problem Dimension [Integer] 
          *  (5) Iterations [Integer]
          */
-
-        // for (double i = 0; i < 1; i+= 0.05)
-        //     System.out.println(Function.f2(Vector.ZeroOne(10), (byte)2));
-        // System.exit(1);
-
         if (args.length != 5)
             usage();
+
+        
         
         int ARCHIVE_SIZE = Integer.parseInt(args[0]);
         byte FLAG = Byte.parseByte(args[1]);
@@ -27,17 +25,24 @@ public class Driver {
         String FILENAME = fileName(ARCHIVE_SIZE, SWARM_SIZE, ITERS, FLAG, DIMENSION);
         Archive my_front = new Archive(ARCHIVE_SIZE, FLAG);
         Archive optimal = Function.getOptimalFront(1000, FLAG);
+
         Swarm s1 = new Swarm(FLAG, (byte) 1, SWARM_SIZE, DIMENSION, my_front);
         Swarm s2 = new Swarm(FLAG, (byte) 2, SWARM_SIZE, DIMENSION, my_front);
-        double[] IGD = new double[ITERS];
 
-        for (int i = 0; i < ITERS; i ++) {
+        ArrayList<Double> arr = new ArrayList<>();
+        int printCount = 1;
+        for (int i = 0; i < ITERS; i++) {
             s1.updateIteration();
             s2.updateIteration();
-            IGD[i] = Utility.IGD(my_front.arcToF1F2(), optimal);
-        }
+            if (i % 20 == 0 && i != 0)
+                arr.add(Utility.IGD(my_front.arcToF1F2(), optimal));
 
-        System.out.println(my_front.csvPrint());
+            if (i % 500 == 0 && i != 0) {
+                System.out.println(my_front.csvPrint(printCount++));
+            }
+        }
+        System.out.println(my_front.csvPrint(printCount));
+        Double[] IGD = arr.toArray(new Double[arr.size()]);
         writeDistances(FILENAME, FLAG, IGD);
     }
 
@@ -77,7 +82,7 @@ public class Driver {
         return null;
     }
 
-    public static void writeDistances(String FILENAME, byte flag, double[] data) {
+    public static void writeDistances(String FILENAME, byte flag, Double[] data) {
         try {
             PrintWriter writer = new PrintWriter("logs/" + funcName(flag) + "IGD/" + FILENAME + (int)(Math.random() * 100) + ".csv", "UTF-8");
 

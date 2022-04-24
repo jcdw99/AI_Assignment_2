@@ -10,6 +10,7 @@ public class Swarm {
     private byte funcFlag;
     private byte objFlag;
     public static boolean SINGLEMODE = false;
+    private int dim;
 
     /**
      * Initializes a particle swarm that optimizes the specified function, with specified particle count
@@ -29,6 +30,7 @@ public class Swarm {
         this.c2 = params[2];
         this.c3 = params[3];
         this.archive = a;
+        this.dim = dim;
         this.particles = new Particle[particles];
 
         for (int i = 0; i < particles; i++) {
@@ -39,7 +41,7 @@ public class Swarm {
         updateHoodBest(findGlobalBest());
     }
 
-    private double[] getParams(byte flag) throws Exception{
+    private double[] getParams(byte flag) throws Exception {
         switch (flag) {
             case 1: 
                 double[] dat = {0.475, 1.8, 1.1, 1.8};
@@ -48,7 +50,8 @@ public class Swarm {
                 double[] dat1 = {0.075, 1.6, 1.35, 1.9};
                 return dat1;
             case 3:
-                return Utility.sampleControlParams();
+                double[] dats = Utility.sampleControlParams();
+                return dats;
             case 4: 
                 double[] dat3 = {0.175, 1.85, 1.35, 1.85};
                 return dat3;
@@ -159,8 +162,8 @@ public class Swarm {
         }
     }
 
-    public String csvArchive() throws Exception {
-        return archive.csvPrint();
+    public String csvArchive(int z) throws Exception {
+        return archive.csvPrint(z);
     }
 
 

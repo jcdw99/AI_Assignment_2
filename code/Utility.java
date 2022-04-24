@@ -34,7 +34,8 @@ public class Utility {
         double RHS_BOT_DEN = 3 * (c1 + (lam * c2) + ((1 - lam)*(c3))) * (c1 + (lam * c2) + ((1 - lam)*(c3)));
     
         double RHS = RHS_TOP_NUM / (RHS_BOT_LEFT + ( RHS_BOT_NUM / RHS_BOT_DEN));
-        return LHS < RHS;
+
+        return LHS < RHS && LHS > 0;
     }
 
     public static double calcLambda(double w, double c1, double c2, double c3) {
@@ -58,19 +59,30 @@ public class Utility {
     public static double IGD(Archive a, Archive b) throws Exception {
         double distance = 0.0;
         // for each vector in my estimated front
+        double[] closests = new double[10];
+        for (int i = 0; i < closests.length; i++)
+            closests[i] = Double.MAX_VALUE;
         for (int i = 0; i < a.entries.length; i++) {
             // for each vector in the optimal front
             Vector found = a.entries[i];
-            double closest = Double.MAX_VALUE;
             for (int j = 1; j < b.entries.length - 1; j++) {
-                if (found.distance(b.entries[j]) < closest) {
-                    closest = found.distance(b.entries[j]);
+
+                double dist = found.distance(b.entries[j]);
+
+                for (int k = 0; k < closests.length; k++) {
+                    if (dist < closests[k]) {
+                        closests[k] = dist;
+                        break;
+                    }
                 }
+
             }
-            distance += closest * closest;
+        }
+        for (int i = 0; i < closests.length; i++) {
+            distance += (Math.pow(closests[i], 2));
         }
 
-        return Math.sqrt(distance) / a.entries.length;
+        return Math.sqrt(distance) / closests.length;
     }
 
 }

@@ -6,7 +6,7 @@ import java.util.Comparator;
 public class Archive {
 
     public Vector[] entries;
-    private int size;
+    public int size;
     private int tournySize;
     private byte funcFlag;
 
@@ -217,9 +217,9 @@ public class Archive {
         return a;        
     }
 
-    public String csvPrint() throws Exception {
+    public String csvPrint(int z) throws Exception {
         StringBuilder b = new StringBuilder();
-        b.append("F1, F2\n");
+        b.append("F1:" + z + ", F2:" + z + "\n");
         for (int i = 0; i < size; i++) {
             Vector v = entryF1F2Form(entries[i]); 
             b.append(v.atIndex(0));

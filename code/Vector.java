@@ -1,5 +1,4 @@
 
-
 public class Vector {
 
     private static double EPSILON = 0.0001;
@@ -39,13 +38,7 @@ public class Vector {
         this.data[index] = val;
     }
 
-    private static boolean less(double a, double b) {
-        if (Math.abs(a - b) > EPSILON && a < b) {
-            return true;
-        }
-        return false;
 
-    }
     /**
      * returns true if vector A dominates Vector B. The usage is boolean res = A.dominates(B)
      * @param that represents Vector B
@@ -62,13 +55,13 @@ public class Vector {
                 lessFlag = true;
                 continue;
             }
-
-            if (this.data[i] == that.atIndex(i))
+            if (this.data[i] <= that.atIndex(i))
                 continue;
             else
                 return false;
         }
         return lessFlag;
+        
     }
 
 

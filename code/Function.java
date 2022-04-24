@@ -269,7 +269,6 @@ public class Function {
         private static double f2(Vector x) throws Exception {
             double g = 1 + 9 * Math.pow((x.sum(1) / (x.size() - 1.0)), 0.25);
             double h = 1 - Math.pow((f1(x) / g), 2);
-            System.out.printf("G:%s and H:%s\n", g, h);
             double f2 = g * h;
             return f2;
         }
@@ -306,7 +305,11 @@ public class Function {
             return x.atIndex(0);
         }
         private static double f2(Vector x) throws Exception {
-            double g = 1.0 + 10.0*(x.size() - 1.0) + x.pow(2).shift(10.0*Math.cos(4.0*Math.PI)).sum(1);
+            Vector old = x.duplicate();
+            old = old.scale(4*Math.PI);
+            old = old.cos();
+            old = old.scale(10);
+            double g = 91 + (x.pow(2).sub(old)).sum(1);
             double h = 1 - Math.sqrt((f1(x) / g));
             double f2 = g * h;
             return f2;
