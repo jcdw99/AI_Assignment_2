@@ -11,23 +11,26 @@ public class Driver {
          *  (3) Swarm Size [Integer]
          *  (4) Problem Dimension [Integer] 
          *  (5) Iterations [Integer]
+         *  (6) Speciation-Mode [Boolean]
          */
-        if (args.length != 5)
+
+        if (args.length != 6)
             usage();
 
-        
-        
+    
         int ARCHIVE_SIZE = Integer.parseInt(args[0]);
         byte FLAG = Byte.parseByte(args[1]);
         int SWARM_SIZE = Integer.parseInt(args[2]);
         int DIMENSION = Integer.parseInt(args[3]);
         int ITERS = Integer.parseInt(args[4]);
+        boolean SPECMODE = Boolean.parseBoolean(args[5]);
+        String MODE = (SPECMODE) ? "SP/": "IW/";
         String FILENAME = fileName(ARCHIVE_SIZE, SWARM_SIZE, ITERS, FLAG, DIMENSION);
         Archive my_front = new Archive(ARCHIVE_SIZE, FLAG);
         Archive optimal = Function.getOptimalFront(1000, FLAG);
 
-        Swarm s1 = new Swarm(FLAG, (byte) 1, SWARM_SIZE, DIMENSION, my_front);
-        Swarm s2 = new Swarm(FLAG, (byte) 2, SWARM_SIZE, DIMENSION, my_front);
+        Swarm s1 = new Swarm(FLAG, (byte) 1, SWARM_SIZE, DIMENSION, my_front, SPECMODE);
+        Swarm s2 = new Swarm(FLAG, (byte) 2, SWARM_SIZE, DIMENSION, my_front, SPECMODE);
 
         ArrayList<Double> arr = new ArrayList<>();
         int printCount = 1;
@@ -43,7 +46,7 @@ public class Driver {
         }
         System.out.println(my_front.csvPrint(printCount));
         Double[] IGD = arr.toArray(new Double[arr.size()]);
-        writeDistances(FILENAME, FLAG, IGD);
+        writeDistances(FILENAME, FLAG, IGD, MODE);
     }
 
     public static void usage() {
@@ -53,6 +56,7 @@ public class Driver {
         "\t(3) Swarm Size [Integer]\n" +
         "\t(4) Problem Dimension [Integer]\n"+
         "\t(5) Iterations [Integer]\n" +
+        "\t(6) Speciation-Mode [Boolean]\n" +
         "==========================================\n";
         System.out.println(usage);
         System.exit(1);
@@ -82,9 +86,9 @@ public class Driver {
         return null;
     }
 
-    public static void writeDistances(String FILENAME, byte flag, Double[] data) {
+    public static void writeDistances(String FILENAME, byte flag, Double[] data, String path) {
         try {
-            PrintWriter writer = new PrintWriter("logs/" + funcName(flag) + "IGD/" + FILENAME + (int)(Math.random() * 100) + ".csv", "UTF-8");
+            PrintWriter writer = new PrintWriter("logs/" +path + funcName(flag) + "IGD/" + FILENAME + (int)(Math.random() * 100000) + ".csv", "UTF-8");
 
             for (int i = 0; i < data.length; i++) {
                 if (i < data.length - 1)
