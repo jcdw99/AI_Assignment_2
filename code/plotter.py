@@ -229,14 +229,14 @@ def plotOne(path):
     plt.legend()   
 
 
-# for i in [6]: 
-#     plotZDT(i, True)
-#     plotZDT(i, False)
-    # plotIGD_ZDT(True, i)
-    # plotIGD_ZDT(False, i)
+for i in [1]: 
+    plotZDT(i, True)
+    plotZDT(i, False)
+    plotIGD_ZDT(True, i)
+    plotIGD_ZDT(False, i)
 
-# for i in [1,2,3,4,6]: 
-#     get_IGD_winners(i, "var")
+for i in [1,2,3,4,6]: 
+    get_IGD_winners(i, "var")
 
 for i in [1,2,3,4,6]:
     print("test result for ZDT" + str(i) + "   ")
